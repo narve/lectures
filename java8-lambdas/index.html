@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Java 8 - Lambdas and other coolness</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Narve Sætre">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+        
+        <style>
+            div p { text-align: left }
+            div dl { text-align: left; display: inline}
+            div dl dt { text-align: left }
+            div dl dd { text-align: left }
+        </style>
+        
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Java 8 Lambdas!</h1>
+                </section>
+                
+                <section>
+					<h3>Meg </h3>
+                    <ul>
+                        <li>
+                        Narve Sætre
+                        </li>
+                        <li>
+                        Knowit AS
+                        </li>
+                        <li>
+                        mrnarve@gmail.com
+                        </li>
+                    </ul>
+				</section>
+
+				<section>
+					<h2>Plan</h2>
+					<ul>
+                        <li>Hva er egentlig lambdas og closures?</li>
+                        <li>Syntaks</li>
+                        <li>Relaterte språkendringer: 
+                            <ul>
+                                <li>Effectively final</li>
+                                <li>Virtual extension methods</li>
+                                <li>Method references</li>
+                            </ul>
+                        </li>
+                        <li>API - Collections etc</li>
+					</ul>
+
+					<aside class="notes">
+						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+					</aside>
+				</section>
+
+					<section>
+						<h2>Closures</h2>
+						<p><q>
+                            en funksjon eller en funksjonsreferanse med et tilhørende "miljø" 
+                            definert utenfor selve funksjonen
+						</q></p>
+<pre><code data-trim contenteditable>
+Condition stopCondition( final Server server ) {
+    return new Condition() {
+        public boolean evaluate() {
+            return server.isRunning(); 
+        }
+    }
+}
+					</code></pre>
+                        <p>Java har altså støttet en form for closures lenge (siden 1.1): 
+                            Funksjoner som refererer til variabler som ikke er en del av parameterlisten (og ikke er globalt). </p>
+					</section>					
+
+
+                    <section>
+                        <h2>Lambda</h2>
+                        <p><q>
+                            en funksjon som er definert (og invokert) uten å være bundet til en identifier
+                            </q></p>
+                        <p>
+                            Java har tidligere hatt anonyme <i>klasser</i> men ikke anonyme <i>funksjoner</i> 
+                            - mao ikke lambdaer. Java 8 har altså støtte for både lambdaer og closures, og noen 
+                            lambdaer vil være closures og noen closures vil være lambdaer. 
+                        </p>
+                    </section>
+   
+                
+				<section>
+					<h2>Eksempler</h2>
+<pre><code data-trim contenteditable>
+Runnable r = () -> {}; 
+    
+ActionListener al = (a) -> { log.debug( "Got action: " + a )}; 
+
+Comparator&lt;String> comp = (String s1, String s2 ) -> 
+    { 
+        out.printf( "Comparing %s to %s %n", s1, s2 ); 
+        return s1.length() - s2.length(); 
+    };
+
+
+List&lt;List&lt;Integer>> ll = ...; 
+ll.stream().reduce(new ArrayList(), (k, v) 
+    -> { k.add( v.stream().reduce(0, (i1, i2) 
+        -> Math.max(i1, i2)) ); return k; } );
+
+</code></pre>
+				</section>
+
+		
+
+				<section>
+                    <h2>Syntax</h2>
+<pre><code data-trim contenteditable>
+                
+Lambda:         Argumentlist -> Body
+                    
+Argumentlist:  ( [ [type] name ] * )
+
+Body:           Expression | Block
+</code></pre>
+                    
+				</section>
+
+
+				<section data-transition="linear"data-background-transition="slide">
+                                        
+                        <h2>Argumentlisten</h2>
+                        <ul>
+                            <li>
+                                Argumentlisten er en liste over parametre "metoden" (lambda-uttrykket) tar, 
+                                tilsvarende parameterlisten i en metode-deklarasjon. 
+                            </li>
+                            <li>
+                                Men 1: Man <i>kan</i> utelate typen til parametre. 
+                            </li>
+                            <li>
+                                Men 2: Hvis det er nøyaktig <i>ett</i> parameter <i>uten type</i> kan man utelate parantesene
+                            </li>
+                        </ul>
+                    
+				</section>
+
+				<section data-transition="linear" data-background-transition="slide">
+					<h2>Arrow</h2>
+					<p>
+						->  Nuff said
+					</p>
+				</section>
+
+				<section>
+					<h2>Body</h2>
+                    
+                    <p>Body er ett av følgende: 
+                    </p>
+                    
+                    <ul>
+                        <li class="fragment">Et uttrykk (expression): 123, "hello", calcAmount()+32, etc. </li>
+                        <li class="fragment">En <i>statement block</i> uten returverdi (dvs type void): <br>
+                            { myList.add(name); } </li>
+                        <li class="fragment">En <i>statement block</i> med returverdi: <br>{ sayHello(name); return name;} </li>
+                        <li class="fragment"><i>EN</i> metode-invokering uten klammeparanteser: out.println( "hello" )</li>
+                        <li class="fragment">En metodereferanse (mer om dette senere!)</li>
+                    </ul>
+                    
+				</section>
+
+				<section>
+					<h2>OK, men... </h2>
+                    Hvordan brukes dette? Hva skjer? Egentlig? 
+				</section>
+
+				<section>
+					<h2>Functional interfaces 1</h2>
+                    <p>
+                        Tidligere kalt for "Single Abstract Method" / SAM interfaces. 
+                    </p>
+                    <p class="fragment">
+                        Et interface eller en abstract klasse med nøyaktig EN <i>ikke-implementert metode</i>. 
+                    </p>
+                    <p class="fragment">
+                        Kompilatoren vil automatisk oversette et lambdauttrykk til en "anonym metode" som implementerer 
+                        metoden i et slikt interface. 
+                    </p>
+                    <p class="fragment">
+                        En lambda er altså IKKE implementert vha anonyme klasser
+                    </p>
+                    <p  class="fragment">(Demo: javap -c Anon\$1)</p>
+				</section>
+
+				<section>
+					<h2>Functional interfaces 2</h2>
+                    <p>
+                        Metoder som ikke teller med i antallet ikke-implementerte metoder:  
+                    </p>
+                    <ul>
+                        <li>Metoder som faktisk er implementert i en abstrakt klasse (dooh)</li>
+                        <li>Metoder som har en <i>default</i> implementasjon (mer om dette senere, kanskje)</li>
+                        <li>Metoder som overrider metoder som finnes i Object-klassen (e.g. toString())</li>
+                    </ul>
+                    <p class="fragment">(Demo: Func1)</p>
+				</section>
+
+                
+                <section>
+                    <h2>Functional abstract class?</h2>
+                    <p>
+                        Initielt skulle også abstrakte klasser kunne være "Functional" og implementeres vha lambda. 
+                        Dette er droppet pga tekniske vanskeligheter samt muligheten for forvirrende kode: 
+                    </p>
+<pre><code data-trim contenteditable>
+public abstract class MyFunc {
+    MyFunc() throws SQLException { sideEffectsHere(); }
+    public abstract void doit(); 
+}
+
+// Somewhere far away from the declaration of MyFunc: 
+MyFunc mf = () -> {}; // throws SQLException, and has sideeffects
+</code></pre>
+                </section>
+                
+				<section>
+					<h2>"Effectively final"</h2>
+                    <p>
+                        Tidligere kunne anonyme klasser kun referere til variabler som var <i>final</i>. 
+                        I java8 har man lempet på dette kravet: Man kan referere til variabler som er 
+                        <i>effectively final</i>. 
+                    </p> 
+                    <p>
+                        Uformell definisjon: 
+                        En variabel er <i>effectively final</i> dersom det ikke ville blitt 
+                        en kompileringsfeil dersom man deklarerte den som final. 
+                    </p>
+                    
+                    <p>
+                        Det samme gjelder lambdaer: Lambdaer som er closures kan (kun) referere til variabler som er 
+                        <i>effectively final</i>
+                    </p>
+                    <p class="fragment">(Demo)</p>
+				</section>
+
+                
+                
+                <section>
+                    <h2>Metodereferanser</h2>
+                    
+                    <p>
+                        For å gjøre kode enda kortere og mer lettlest, har man introdusert 
+                        <i>metode-referanser</i>. Dette er ikke det mange har savnet: 
+                    </p>
+<pre><code data-trim contenteditable>
+    Method m = MyBusinessClass::myMethod; 
+</code></pre>
+                        
+                    <p>
+                        Derimot kan dette brukes i lambdaer: 
+                    </p>
+<pre><code data-trim contenteditable>
+    myStringList.stream().map( String::length ); 
+</code></pre>
+                    
+                    <p>
+                        Både statiske metoder og instansemetoder kan refereres. Kompilatoren 
+                        vil sjekke dette og gi deg 
+                    </p>
+                    <p class="transform">(Demo: Lambda.java)</p>
+                    
+                </section>
+                
+
+
+			</div>
+
+		</div>
+
+<!--		<script src="lib/js/head.min.js"></script>-->
+		<script src="https://raw.github.com/hakimel/reveal.js/master/js/reveal.js"></script>
+<!--		<script src="js/reveal.min.js"></script>-->
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
