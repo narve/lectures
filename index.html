@@ -6,7 +6,7 @@
 
 		<title>Java 8 - Lambdas and other coolness</title>
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="description" content="Java 8 lambda lecture">
 		<meta name="author" content="Narve Sætre">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -68,19 +68,17 @@
 					<ul>
                         <li>Hva er egentlig lambdas og closures?</li>
                         <li>Syntaks</li>
+                        <li>Semantikk</li>
                         <li>Relaterte språkendringer: 
                             <ul>
+                                <li>Method references</li>
                                 <li>Effectively final</li>
                                 <li>Virtual extension methods</li>
-                                <li>Method references</li>
                             </ul>
                         </li>
                         <li>API - Collections etc</li>
 					</ul>
 
-					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-					</aside>
 				</section>
 
 					<section>
@@ -99,18 +97,21 @@ Condition stopCondition( final Server server ) {
 }
 					</code></pre>
                         <p>Java har altså støttet en form for closures lenge (siden 1.1): 
-                            Funksjoner som refererer til variabler som ikke er en del av parameterlisten (og ikke er globalt). </p>
+                            Funksjoner som refererer til variabler som ikke er en del av parameterlisten. </p>
 					</section>					
 
 
                     <section>
                         <h2>Lambda</h2>
                         <p><q>
-                            en funksjon som er definert (og invokert) uten å være bundet til en identifier
+                            en funksjon som er definert (og invokert) 
+                            uten å være bundet til en identifier
                             </q></p>
                         <p>
-                            Java har tidligere hatt anonyme <i>klasser</i> men ikke anonyme <i>funksjoner</i> 
-                            - mao ikke lambdaer. Java 8 har altså støtte for både lambdaer og closures, og noen 
+                            Java har tidligere hatt anonyme <i>klasser</i> 
+                            men ikke anonyme <i>funksjoner</i> 
+                            - mao ikke lambdaer. Java 8 har altså støtte for 
+                            både lambdaer og closures, og noen 
                             lambdaer vil være closures og noen closures vil være lambdaer. 
                         </p>
                     </section>
@@ -159,14 +160,16 @@ Body:           Expression | Block
                         <h2>Argumentlisten</h2>
                         <ul>
                             <li>
-                                Argumentlisten er en liste over parametre "metoden" (lambda-uttrykket) tar, 
+                                Argumentlisten er en liste over parametre 
+                                "metoden" (lambda-uttrykket) tar, 
                                 tilsvarende parameterlisten i en metode-deklarasjon. 
                             </li>
                             <li>
                                 Men 1: Man <i>kan</i> utelate typen til parametre. 
                             </li>
                             <li>
-                                Men 2: Hvis det er nøyaktig <i>ett</i> parameter <i>uten type</i> kan man utelate parantesene
+                                Men 2: Hvis det er nøyaktig <i>ett</i> 
+                                parameter <i>uten type</i> kan man utelate parantesene
                             </li>
                         </ul>
                     
@@ -186,11 +189,18 @@ Body:           Expression | Block
                     </p>
                     
                     <ul>
-                        <li class="fragment">Et uttrykk (expression): 123, "hello", calcAmount()+32, etc. </li>
-                        <li class="fragment">En <i>statement block</i> uten returverdi (dvs type void): <br>
+                        <li class="fragment">
+                            Et uttrykk (expression): 123, "hello", calcAmount()+32, etc. </li>
+                        <li class="fragment">
+                            En <i>statement block</i> uten returverdi (dvs type void): <br>
                             { myList.add(name); } </li>
-                        <li class="fragment">En <i>statement block</i> med returverdi: <br>{ sayHello(name); return name;} </li>
-                        <li class="fragment"><i>EN</i> metode-invokering uten klammeparanteser: out.println( "hello" )</li>
+                        <li class="fragment">
+                            En <i>statement block</i> med returverdi: <br>
+                            { sayHello(name); return name;} </li>
+                        <li class="fragment">
+                            Ett metodekall uten klammeparanteser: 
+                            <br>out.println( "hello" )
+                        </li>
                         <li class="fragment">En metodereferanse (mer om dette senere!)</li>
                     </ul>
                     
@@ -207,16 +217,18 @@ Body:           Expression | Block
                         Tidligere kalt for "Single Abstract Method" / SAM interfaces. 
                     </p>
                     <p class="fragment">
-                        Et interface eller en abstract klasse med nøyaktig EN <i>ikke-implementert metode</i>. 
+                        Et interface eller en abstract klasse med 
+                        nøyaktig EN <i>ikke-implementert metode</i>. 
                     </p>
                     <p class="fragment">
-                        Kompilatoren vil automatisk oversette et lambdauttrykk til en "anonym metode" som implementerer 
+                        Kompilatoren vil automatisk oversette et 
+                        lambdauttrykk til en "anonym metode" som implementerer 
                         metoden i et slikt interface. 
                     </p>
                     <p class="fragment">
                         En lambda er altså IKKE implementert vha anonyme klasser
                     </p>
-                    <p  class="fragment">(Demo: javap -c Anon\$1)</p>
+                    <p  class="fragment">(Demo: Anon/Not-anon, javap -c Anon\$1)</p>
 				</section>
 
 				<section>
@@ -225,9 +237,12 @@ Body:           Expression | Block
                         Metoder som ikke teller med i antallet ikke-implementerte metoder:  
                     </p>
                     <ul>
-                        <li>Metoder som faktisk er implementert i en abstrakt klasse (dooh)</li>
-                        <li>Metoder som har en <i>default</i> implementasjon (mer om dette senere, kanskje)</li>
-                        <li>Metoder som overrider metoder som finnes i Object-klassen (e.g. toString())</li>
+                        <li>Metoder som faktisk er implementert i en 
+                            abstrakt klasse (dooh)</li>
+                        <li>Metoder som har en <i>default</i> implementasjon
+                            (mer om dette senere, kanskje)</li>
+                        <li>Metoder som overrider metoder som finnes i 
+                            Object-klassen (e.g. toString())</li>
                     </ul>
                     <p class="fragment">(Demo: Func1)</p>
 				</section>
@@ -236,8 +251,10 @@ Body:           Expression | Block
                 <section>
                     <h2>Functional abstract class?</h2>
                     <p>
-                        Initielt skulle også abstrakte klasser kunne være "Functional" og implementeres vha lambda. 
-                        Dette er droppet pga tekniske vanskeligheter samt muligheten for forvirrende kode: 
+                        Initielt skulle også abstrakte klasser 
+                        kunne være "Functional" og implementeres vha lambda. 
+                        Dette er droppet pga tekniske vanskeligheter 
+                        samt muligheten for forvirrende kode: 
                     </p>
 <pre><code data-trim contenteditable>
 public abstract class MyFunc {
@@ -246,15 +263,17 @@ public abstract class MyFunc {
 }
 
 // Somewhere far away from the declaration of MyFunc: 
-MyFunc mf = () -> {}; // throws SQLException, and has sideeffects
+MyFunc mf = () -> {}; // throws SQLException, AND has sideeffects
 </code></pre>
                 </section>
                 
 				<section>
 					<h2>"Effectively final"</h2>
                     <p>
-                        Tidligere kunne anonyme klasser kun referere til variabler som var <i>final</i>. 
-                        I java8 har man lempet på dette kravet: Man kan referere til variabler som er 
+                        Tidligere kunne anonyme klasser kun referere 
+                        til variabler som var <i>final</i>. 
+                        I java8 har man lempet på dette kravet: 
+                        Man kan nå referere til variabler som er 
                         <i>effectively final</i>. 
                     </p> 
                     <p>
@@ -264,7 +283,9 @@ MyFunc mf = () -> {}; // throws SQLException, and has sideeffects
                     </p>
                     
                     <p>
-                        Det samme gjelder lambdaer: Lambdaer som er closures kan (kun) referere til variabler som er 
+                        Det samme gjelder lambdaer: 
+                        Lambdaer som er closures kan (kun) referere til 
+                        variabler som er 
                         <i>effectively final</i>
                     </p>
                     <p class="fragment">(Demo)</p>
