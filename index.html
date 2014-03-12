@@ -226,7 +226,8 @@ Body:           Expression | Block
                         metoden i et slikt interface. 
                     </p>
                     <p class="fragment">
-                        En lambda er altså IKKE implementert vha anonyme klasser
+                        En lambda er altså IKKE implementert vha anonyme klasser, 
+                        med vha <i>invokedynamic</i>
                     </p>
                     <p  class="fragment">(Demo: Anon/Not-anon, javap -c Anon\$1)</p>
 				</section>
@@ -285,10 +286,10 @@ MyFunc mf = () -> {}; // throws SQLException, AND has sideeffects
                     <p>
                         Det samme gjelder lambdaer: 
                         Lambdaer som er closures kan (kun) referere til 
-                        variabler som er 
+                        variabler som er  
                         <i>effectively final</i>
                     </p>
-                    <p class="fragment">(Demo)</p>
+                    <p class="fragment">(Demo: Anon)</p>
 				</section>
 
                 
@@ -311,18 +312,97 @@ MyFunc mf = () -> {}; // throws SQLException, AND has sideeffects
                         til statiske metoder: 
                     </p>
 <pre><code data-trim contenteditable>
-    myStringList.stream().map( String::length ); 
-    myStringList.stream().map( myObject::myNonStaticStringToIntFunction ); 
-    myStringList.stream().map( myString::length );  // Error: Method is static
-    myStringList.stream().map( myString::length );  // Error: Method is static
+myStringList.stream().map( String::length ); 
+myStringList.stream().map( myObject::myNonStaticStringToIntFunction ); 
+myStringList.stream().map( myString::length );  // Error: Method is static
 </code></pre>
                     
                     <p class="transform">(Demo: Lambda.java)</p>
                     
                 </section>
                 
+                
+                <section>
+                    <h2>Metodereferanser 2</h2>
+                    Metodereferanser kommer i 4 ulike varianter: 
+                    <ol>
+                        <li>Statiske metoder</li>
+                        <li>Instans-metoder til "gjeldende objekt"</li>
+                        <li>Instans-metoder til et eksisterende objekt"</li>
+                        <li>Konstruktører</li>
+                    </ol>
+                    <p class="transform">
+                        (Demo: Refs)
+                    </p>
+                </section>
 
+                
+                <section>
+                    <h2>Virtual Extension Methods</h2>
+                    <p>
+                        Bakgrunnen er at lambdas i seg selv er kult og nyttig, 
+                        men verdien blir mye større dersom Java har et sett med 
+                        API'er som bruker lambdas ekstensivt. De mest opplagte 
+                        eksempelene er List.forEach( ... ) og List.map( ... )
+                    </p>
+                    <p class="transform">
+                        Men man kan ikke legge til nye metoder i et interface
+                        uten å bryte bakoverkompatibilitet. Tenk feks alle 
+                        kodebaser som ryker pga den nye metoden Iterable.forEach. 
+                    </p>
+                    <p>
+                        Derfor innførte man "Virtual Extension Methods", 
+                        også kjent som "default methods" og "defender methods". 
+                        Dette konseptet minner om C# sine "extension methods", 
+                        men har også en del signifikante forskjeller. 
+                        (Polymorfise, arv, lesbarhet)
+                    </p>
+                </section>
+                
+                <section>
+                    <h2>Virtual Extension Methods 2</h2>
+                    <p>
+                        Syntax: <code>default</code> foran 
+                        metoden, ellers som vanlig. 
+                    </p>
+                    <p>
+                        Hvorfor trenger man <code>default</code> i det hele tatt? 
+                        Sannsynligvis bare for å gjøre koden mer lesbar, og skillet 
+                        mellom interfacer og klasser tydeligere. 
+                    </p>
+                    <p>
+                        Veldig mange av java sine standard-klasser, spesielt 
+                        Collection-klassene, har blitt retrofittet med diverse 
+                        kule og nyttige metoder vha VEMs. 
+                    </p>
+                    <p>
+                        Interfacer kan også ha <i>statiske</i> metoder
+                    </p>
+                    
+                    <p class="transform">(Demo: Func1)</p>
+                </section>
+                
+                <section>
+                    <h2>APIs</h2>
+                    <p>http://download.java.net/jdk8/docs/api/</p>
+                    <p>
+                        <a href="http://download.java.net/jdk8/docs/api/java/util/function/package-summary.html">
+                        Functions</a></p>
+                    <p>
+            <a href="http://download.java.net/jdk8/docs/api/java/util/package-summary.html">
+                        Collection APIs</a></p>
+                    
+                    <p>
+                        VEMs på feks Function
+                    </p>
+                    
+                    <p class="transform">(Demo: Predicates)</p></p>
+                </section>
 
+                <section>
+                    <h2>Streams</h2>
+                    
+                </section>
 			</div>
 
 		</div>

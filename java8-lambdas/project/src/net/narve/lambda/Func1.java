@@ -6,8 +6,12 @@ public interface Func1 {
 
     void doit();
 
-    default void println( String s) {
+    default void log( String s) {
         System.out.println( s );
+    }
+
+    static void staticLog( String s ) {
+        System.out.println("Static log: " + s );
     }
 
 }

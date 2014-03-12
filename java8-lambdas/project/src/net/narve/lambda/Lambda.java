@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.lang.System.out;
 import static java.util.Arrays.asList;
@@ -32,6 +33,16 @@ public class Lambda {
         });
 
         e.execute( ()->{} );
+
+        e.execute( ""::length);
+
+        Supplier<String> sup1 = () -> System.getProperty( "asdf" );
+        Supplier<String> sup2 = () -> System.getProperty( "asdf" );
+
+        Supplier sup3 = System::getenv;
+
+
+
 
         ActionListener al1 = (a) -> { out.println("Got action: " + a);};
 
@@ -59,9 +70,12 @@ public class Lambda {
         Function<String, Integer> func6 = Lambda::lengthOfStringStatic;
         Function<String, Integer> func7 = lambda::lengthOfStringNonStatic;
 
+        // Function<String, Integer> func8 = lambda::lengthOfStringStatic;
+        // Function<String, Integer> func9 = Lambda::lengthOfStringNonStatic;
+
         asList( "asdf").stream().map( lambda::lengthOfStringNonStatic );
 
-        Method m = Lambda::lengthOfStringNonStatic;  
+        // Method m = Lambda::lengthOfStringNonStatic;
 
 
 
