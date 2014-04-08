@@ -7,6 +7,7 @@
 		<title>Java 8 - Lambdas and other coolness</title>
 
 		<meta name="description" content="Java 8 lambda lecture">
+
 		<meta name="author" content="Narve Sætre">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -69,7 +70,7 @@
                         <li>Hva er egentlig lambdas og closures?</li>
                         <li>Syntaks</li>
                         <li>Semantikk</li>
-                        <li>Relaterte språkendringer: 
+                        <li>Relaterte språkendringer:
                             <ul>
                                 <li>Method references</li>
                                 <li>Effectively final</li>
@@ -97,8 +98,8 @@ Condition stopCondition( final Server server ) {
 }
 					</code></pre>
                         <p>Java har altså støttet en form for closures lenge (siden 1.1): 
-                            Funksjoner som refererer til variabler som ikke er en del av parameterlisten. </p>
-					</section>					
+                            Funksjoner som refererer til variabler som ikke er en del av parameterlisten</p>
+					</section>
 
 
                     <section>
@@ -291,9 +292,7 @@ MyFunc mf = () -> {}; // throws SQLException, AND has sideeffects
                     </p>
                     <p class="fragment">(Demo: Anon)</p>
 				</section>
-
-                
-                
+                                
                 <section>
                     <h2>Metodereferanser</h2>
                     
@@ -307,13 +306,16 @@ MyFunc mf = () -> {}; // throws SQLException, AND has sideeffects
                         
                     <p>
                         Derimot kan dette brukes i lambdaer :) 
+                    </p>
+                    <p>
                         Både statiske metoder og instansemetoder kan refereres. I motsetning 
                         til "vanlig" java kan du ikke bruke instanser når du refererer 
                         til statiske metoder: 
                     </p>
 <pre><code data-trim contenteditable>
-myStringList.stream().map( String::length ); 
-myStringList.stream().map( myObject::myNonStaticStringToIntFunction ); 
+myStringList.stream().map( myObject::myNonStaticStringToIntFunction );
+myStringList.stream().map( MyClass::myStaticStringToIntFunction );
+myStringList.stream().map( String::length );
 myStringList.stream().map( myString::length );  // Error: Method is static
 </code></pre>
                     
@@ -399,10 +401,27 @@ myStringList.stream().map( myString::length );  // Error: Method is static
                     <p class="transform">(Demo: Predicates)</p></p>
                 </section>
 
-                <section>
-                    <h2>Streams</h2>
-                    
-                </section>
+
+				<section>
+					<h2>Typen til lambda</h2>
+                    <p>
+                        Hva er "typen" til et lambda-uttrykk? 
+                    </p>
+<pre><code data-trim contenteditable>
+    ( ActionEvent el ) -> logger.log( "Action: " + el )
+    () -> {}
+</code></pre>                    
+                    <p class="fragment">Svaret er opplagt, når man tenker seg om: 
+                        Et lambda-uttrykk i seg selv har ingen type. Lambda-uttrykk kan KUN brukes 
+                        i tilfeller der kompilatoren forventer en type (feks metode-invokeringer 
+                        eller variabel-deklarasjoner). 
+                        Kompilatoren analyserer da måltypen (<i>target type</i>), 
+                        og ser om lambda-uttrykket er <i>kompatibelt</i> med denne, 
+                        som må være et <i>FunctionalInterface</i>. 
+                    </p> 
+                    <p class="fragment">(Demo: TargetTypes)</p>
+				</section>
+
 			</div>
 
 		</div>

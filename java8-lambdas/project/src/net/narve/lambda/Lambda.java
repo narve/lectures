@@ -3,8 +3,11 @@ package net.narve.lambda;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -75,7 +78,11 @@ public class Lambda {
 
         asList( "asdf").stream().map( lambda::lengthOfStringNonStatic );
 
+<<<<<<< HEAD
         // Method m = Lambda::lengthOfStringNonStatic;
+=======
+//        Method m = Lambda::lengthOfStringNonStatic;
+>>>>>>> misc old stuff - excpect conflictorama
 
 
 
@@ -105,6 +112,20 @@ public class Lambda {
 
         Function<String, Integer> f1 = s -> s.length();
 
+
+    }
+
+
+    public static <T,U> void TargetTypes() {
+
+        Runnable r = () -> System.out.println( "Runnable");
+
+        Comparator<String> comp1 = (s1,s2) -> s1.length()-s2.length();  //int Comparator.compare( String s1, String s2 );
+        BiFunction<String,String, Integer> comp2 = (s1,s2) -> s1.length()-s2.length();  // Integer BiFunction.apply( String s1, String s2 )
+        BiFunction<T, U, Integer> comp3 = (s1,s2) -> s1.toString().length()-s2.toString().length();  // Integer BiFunction.apply( T s1, U s2 )
+
+        Object o1 = (Runnable) ""::length;
+//        Object o2 = (Runnable) String::length; // ERROR
 
     }
 
