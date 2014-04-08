@@ -46,7 +46,7 @@
 <!-- Any section element inside of this container is displayed as a slide -->
 <div class="slides">
 <section>
-    <h1>Java 8 Lambdas!</h1>
+    <h1>Java 8 Coolness!</h1>
 </section>
 
 <section>
@@ -67,6 +67,7 @@
 <section>
     <h2>Plan</h2>
     <ul>
+        <li>Java 8 - oversikt over nye features</li>
         <li>Hva er egentlig lambdas og closures?</li>
         <li>Syntaks</li>
         <li>Semantikk</li>
@@ -77,7 +78,24 @@
                 <li>Virtual extension methods</li>
             </ul>
         </li>
-        <li>API - Collections etc</li>
+        <li>Hvis tid: API - Collections etc</li>
+    </ul>
+
+</section>
+
+<section>
+    <h2>Nye ting i Java8</h2>
+
+    <ul>
+        <li>Mye!</li>
+        <li>Compact profiles</li>
+        <li>Nashorn Javascript Engine</li>
+        <li>Date-time (Joda-time)</li>
+        <li>XML, JDBC, etc etc</li>
+        <li>JRockit features: Java Mission Control</li>
+        <li>No more PermGen</li>
+        <li>Type annotations</li>
+        <li>Lambdas og relaterte språkendringer</li>
     </ul>
 
 </section>
@@ -89,13 +107,13 @@
         definert utenfor selve funksjonen
     </q></p>
 <pre><code data-trim contenteditable>
-    Condition stopCondition( final Server server ) {
+Condition stopCondition( final Server server ) {
     return new Condition() {
-    public boolean evaluate() {
-    return server.isRunning();
+        public boolean evaluate() {
+            return server.isRunning();
+        }
     }
-    }
-    }
+}
 </code></pre>
     <p>Java har altså støttet en form for closures lenge (siden 1.1):
         Funksjoner som refererer til variabler som ikke er en del av parameterlisten</p>
@@ -125,10 +143,9 @@
 
     ActionListener al = (a) -> { log.debug( "Got action: " + a )};
 
-    Comparator&lt;String> comp = (String s1, String s2 ) ->
-    {
-    out.printf( "Comparing %s to %s %n", s1, s2 );
-    return s1.length() - s2.length();
+    Comparator&lt;String> comp = (String s1, String s2 ) -> {
+        out.printf( "Comparing %s to %s %n", s1, s2 );
+        return s1.length() - s2.length();
     };
 
 
@@ -146,11 +163,11 @@
     <h2>Syntax</h2>
 <pre><code data-trim contenteditable>
 
-    Lambda:         Argumentlist -> Body
+Lambda:         Argumentlist -> Body
 
-    Argumentlist:  ( [ [type] name ] * )
+Argumentlist:  ( [ [type] name ] * )
 
-    Body:           Expression | Block
+Body:           Expression | Block
 </code></pre>
 
 </section>
@@ -259,13 +276,13 @@
         samt muligheten for forvirrende kode:
     </p>
 <pre><code data-trim contenteditable>
-    public abstract class MyFunc {
+public abstract class MyFunc {
     MyFunc() throws SQLException { sideEffectsHere(); }
     public abstract void doit();
-    }
+}
 
-    // Somewhere far away from the declaration of MyFunc:
-    MyFunc mf = () -> {}; // throws SQLException, AND has sideeffects
+// Somewhere far away from the declaration of MyFunc:
+MyFunc mf = () -> {}; // throws SQLException, AND has sideeffects
 </code></pre>
 </section>
 
@@ -301,7 +318,7 @@
         <i>metode-referanser</i>. Dette er ikke det mange har savnet:
     </p>
 <pre><code data-trim contenteditable>
-    Method m = MyBusinessClass::myMethod;
+Method m = MyBusinessClass::myMethod;
 </code></pre>
 
     <p>
@@ -313,10 +330,10 @@
         til statiske metoder:
     </p>
 <pre><code data-trim contenteditable>
-    myStringList.stream().map( myObject::myNonStaticStringToIntFunction );
-    myStringList.stream().map( MyClass::myStaticStringToIntFunction );
-    myStringList.stream().map( String::length );
-    myStringList.stream().map( myString::length );  // Error: Method is static
+myStringList.stream().map( myObject::myNonStaticStringToIntFunction );
+myStringList.stream().map( MyClass::myStaticStringToIntFunction );
+myStringList.stream().map( String::length );
+myStringList.stream().map( myString::length );  // Error: Method is static
 </code></pre>
 
     <p class="transform">(Demo: Lambda.java)</p>
